@@ -1,0 +1,37 @@
+<h1 *ngIf="data.id === null" mat-dialog-title> Ajouter une nouvelle tache </h1>
+<h1 *ngIf="data.id !== null" mat-dialog-title> Modifier une tache </h1>
+<div mat-dialog-content>
+  <div class="container">
+    <form [formGroup]="form">
+      <mat-form-field>
+        <mat-label>Nom de la tache</mat-label>
+        <input matInput
+          [maxLength]="50"
+          placeholder="titre"
+          formControlName="titre"
+          required
+        >
+      </mat-form-field> 
+
+      <mat-form-field>
+        <mat-label>Description de la tache</mat-label>
+          <textarea matInput
+            cdkTextareaAutosize
+            [maxLength]="300"
+            cdkAutosizeMinRows="3"
+            cdkAutosizeMaxRows="5"
+            placeholder="description de la tache"
+            formControlName="description"
+            required
+          ></textarea>
+        </mat-form-field>
+    </form>
+  </div>
+</div>
+
+
+ 
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Annuler</button>
+  <button mat-button type="submit" [disabled]="form.invalid" (click)="enregistrer()">Enregistrer</button>
+</div>

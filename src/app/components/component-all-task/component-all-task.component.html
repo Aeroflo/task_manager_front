@@ -1,0 +1,17 @@
+<div>
+    <div class="filters">
+      <div>Filtrer TODO</div>
+      <div>
+        <button mat-button class="button"
+        (click)="openDialogCreate()">
+          Ajouter une nouvelle tache
+        </button>
+      </div>
+    </div>
+    <div class="liste" *ngFor="let task of tasks">
+      <app-component-task-element class="task"
+        [task]="task"
+        (messageDelete)="deleteTask($event)"
+      ></app-component-task-element>
+    </div>
+</div>

@@ -1,1 +1,29 @@
 /* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.mat-button, .mat-button-disabled{
+    background-color: #333;;
+    border: 2px solid rgb(10, 10, 10); ; 
+    color: white;
+    padding: 10px 10px;
+    cursor : pointer;
+    margin: 10px;
+}
+
+.mat-button-disabled{
+    background-color: red;
+}
+.mat-button-disabled .mat-button-wrapper{
+    color: white
+}
+
+.mat-button:hover{
+    background-color: rgb(87, 87, 87);
+   
+}
+
+.mat-button-disabled .mat-button-wrapper:hover{
+    cursor:not-allowed
+}

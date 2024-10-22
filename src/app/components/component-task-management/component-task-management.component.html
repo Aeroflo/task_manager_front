@@ -1,0 +1,66 @@
+<p>component-task-management works!</p>
+
+<div class="wrapper">
+<div class="container">
+    <h2>A faire</h2>
+  
+    <div
+      cdkDropList
+      #todoList="cdkDropList"
+      [cdkDropListData]="todo"
+      [cdkDropListConnectedTo]="[doneList, progressList]"
+      class="list"
+      (cdkDropListDropped)="dropTodo($event)">
+      <div *ngFor="let task of todo">
+        <div class="box" cdkDrag> <app-component-task-element
+            [task]="task"
+            (messageDelete)=deleteTask($event)
+          ></app-component-task-element></div>
+       </div>
+    </div>
+</div>
+
+
+  
+<div class="container">
+    <h2>En cours</h2>
+  
+    <div
+      cdkDropList
+      #progressList="cdkDropList"
+      [cdkDropListData]="progress"
+      [cdkDropListConnectedTo]="[todoList,doneList]"
+      class="list"
+      (cdkDropListDropped)="dropProgress($event)">
+      <div *ngFor="let task of progress">
+       <div class="box" cdkDrag> <app-component-task-element
+        [task]="task"
+        (messageDelete)=deleteTask($event)
+      ></app-component-task-element></div>
+      </div>
+    </div>
+</div>
+
+
+<div class="container">
+    <h2>Terminé</h2>
+ 
+   <div
+   cdkDropList
+   #doneList="cdkDropList"
+   [cdkDropListData]="done"
+   [cdkDropListConnectedTo]="[todoList, progressList]"
+   class="list"
+   (cdkDropListDropped)="dropDone($event)">
+   <div *ngFor="let task of done">
+    <div class="box" cdkDrag> 
+       <app-component-task-element
+       [task]="task"
+       (messageDelete)=deleteTask($event)
+       ></app-component-task-element></div>
+    </div>
+   </div>
+</div>
+
+
+</div>

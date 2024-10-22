@@ -1,0 +1,42 @@
+<div class="task-shape" >
+    <mat-icon  class="close" (click)="deleteTask()">close</mat-icon>
+    <div  *ngIf="task.taskStatus === 'TODO'" class="todo" (click)="seeDetails()">
+        <ng-container *ngTemplateOutlet="descriptionTodo"></ng-container>
+    </div>
+
+    <div  *ngIf="task.taskStatus === 'IN_PROGRESS'" class="progress" (click)="seeDetails()">
+        <ng-container *ngTemplateOutlet="descriptionProgress"></ng-container>
+    </div>
+
+    <div *ngIf="task.taskStatus === 'DONE'" class="done"  (click)="seeDetails()">
+        <ng-container *ngTemplateOutlet="descriptionDone"></ng-container>
+    </div>  
+
+</div>
+
+<ng-template #descriptionTodo>
+    <div class="task-description">
+        <div class="statusTodo">A faire</div>
+        <div class="title">{{task.label}}</div>
+    </div>
+ </ng-template>
+
+ <ng-template #descriptionProgress>
+    <div class="task-description">
+        <div class="statusProgress">En cours</div>
+        <div class="title">{{task.label}}</div>
+    </div>
+ </ng-template>
+
+ <ng-template #descriptionDone>
+    <div class="task-description">
+        <div class="statusDone">Terminé</div>
+        <div class="title">{{task.label}}</div>
+    </div>
+ </ng-template>
+   
+
+   
+
+
+
