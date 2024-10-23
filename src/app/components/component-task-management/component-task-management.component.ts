@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import {
   CdkDragDrop,
   moveItemInArray,
@@ -11,13 +11,16 @@ import { TaskStatus } from 'src/app/constants/task-status';
 import { environment } from 'src/environments/environment';
 import { TaskService } from 'src/app/services/tasks.service';
 import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-component-task-management',
   templateUrl: './component-task-management.component.html',
   styleUrls: ['./component-task-management.component.less'],
 })
-export class ComponentTaskManagementComponent implements OnInit {
+export class ComponentTaskManagementComponent implements OnInit, OnDestroy {
+
+  private readonly destroy$ = new Subject<void>()
 
   @Input() subjectReloadTaskManagement$!: Subject<boolean>
 
@@ -29,9 +32,11 @@ export class ComponentTaskManagementComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadAllTasksSorted;
-    this.subjectReloadTaskManagement$.subscribe(() => {
-      this.loadAllTasksSorted()
-    })
+    this.subjectReloadTaskManagement$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.loadAllTasksSorted()
+      })
   }
 
   loadAllTasksSorted(){
@@ -42,36 +47,38 @@ export class ComponentTaskManagementComponent implements OnInit {
 
   deleteTask(event : string){
     console.log("Delete task")
-    this.taskService.deleteTask(event).subscribe({
-      next : () => {
-        this.todo = this.todo.filter( element => element.id !== event);
-        this.progress = this.progress.filter( element => element.id !== event);
-        this.done = this.done.filter( element => element.id !== event);
-      }
+    this.taskService.deleteTask(event)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next : () => {
+          this.todo = this.todo.filter( element => element.id !== event);
+          this.progress = this.progress.filter( element => element.id !== event);
+          this.done = this.done.filter( element => element.id !== event);
+        }
     })
   }
 
 
 
   private getTask(taskStatus : TaskStatus){
-    this.taskService.getAllTask(taskStatus).subscribe({
-      next : (response : Task[]) => {
-        switch(taskStatus){
-          case TaskStatus.TODO : {
-            this.todo = response
-            break
+    this.taskService.getAllTask(taskStatus)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next : (response : Task[]) => {
+          switch(taskStatus){
+            case TaskStatus.TODO : {
+              this.todo = response
+              break
+            }
+            case TaskStatus.IN_PROGRESS : {
+              this.progress = response
+              break
+            }
+            case TaskStatus.DONE : {
+              this.done = response
+              break
+            }
           }
-          case TaskStatus.IN_PROGRESS : {
-            this.progress = response
-            break
-          }
-          case TaskStatus.DONE : {
-            this.done = response
-            break
-          }
-        }
-        
-        
       }
     });
   }
@@ -112,23 +119,30 @@ export class ComponentTaskManagementComponent implements OnInit {
         event.currentIndex,
       );
 
-      this.updateTaskToStatus(currentTask).subscribe({
-        next : (response : Task) => {
-          
-        },
-        error: (error) => {
-          transferArrayItem(
-            event.container.data,
-            event.previousContainer.data,
-            event.currentIndex,
-            event.previousIndex
-          );
-          currentTask.taskStatus = taskPreviousStatus
-        }
+      this.updateTaskToStatus(currentTask)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next : (response : Task) => {
+            
+          },
+          error: (error) => {
+            transferArrayItem(
+              event.container.data,
+              event.previousContainer.data,
+              event.currentIndex,
+              event.previousIndex
+            );
+            currentTask.taskStatus = taskPreviousStatus
+          }
       });
   }
 
   updateTaskToStatus(task: Task) : Observable<Task>{
     return this.taskService.updateTask(task);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next()
+    this.destroy$.complete()
   }
 }

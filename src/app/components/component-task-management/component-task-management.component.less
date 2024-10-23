@@ -1,6 +1,9 @@
 .wrapper{
   display: flex;
   justify-content: center;
+  flex-grow: 1;
+  height: 100%;
+  margin-top: 2%;
 }
 .container {
     width: 30%;
@@ -8,11 +11,18 @@
     margin: 0 1% 1% 0;
     display: inline-block;
     vertical-align: top;
+    background-color: #333;
+    color: white;
+  }
+
+  .title_container{
+    margin-left: 1%
   }
   
   .list {
-    border: solid 1px #ccc;
-    min-height: 90%;
+    border: solid 2px #333;
+    height: 100%;
+    min-height: 90px;
     background: white;
     border-radius: 4px;
     overflow: hidden;

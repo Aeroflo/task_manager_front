@@ -1,5 +1,5 @@
 <div class="task-shape" >
-    <mat-icon  class="close" (click)="deleteTask()">close</mat-icon>
+    <mat-icon [ngStyle]="{'color':'black'}"  class="close" (click)="deleteTask()">close</mat-icon>
     <div  *ngIf="task.taskStatus === 'TODO'" class="todo" (click)="seeDetails()">
         <ng-container *ngTemplateOutlet="descriptionTodo"></ng-container>
     </div>

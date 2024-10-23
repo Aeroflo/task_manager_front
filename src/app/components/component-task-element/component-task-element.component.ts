@@ -1,16 +1,19 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Task } from 'src/app/models/task';
 import { TaskService } from 'src/app/services/tasks.service';
 import { ComponentTaskDialogComponent } from '../component-task-dialog/component-task-dialog.component';
-import { filter, switchMap } from 'rxjs/operators'
+import { filter, switchMap, takeUntil } from 'rxjs/operators'
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-component-task-element',
   templateUrl: './component-task-element.component.html',
   styleUrls: ['./component-task-element.component.less']
 })
-export class ComponentTaskElementComponent implements OnInit {
+export class ComponentTaskElementComponent implements OnInit, OnDestroy {
+
+  private readonly destroy$ = new Subject<void>()
 
   @Input() task!: Task;
   @Output() messageDelete = new EventEmitter<string>();
@@ -38,11 +41,16 @@ export class ComponentTaskElementComponent implements OnInit {
     });
 
     dialogRef.afterClosed().pipe(
-      filter((result: Task) => result != undefined),
+        takeUntil(this.destroy$),
+        filter((result: Task) => result != undefined),
         switchMap((result : Task) => this.taskService.updateTask(result))
       ).subscribe((response : Task) => {
           this.task = response
       });
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next()
+    this.destroy$.complete()
+  }
 }

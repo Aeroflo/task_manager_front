@@ -1,18 +1,20 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { TaskStatus } from 'src/app/constants/task-status';
 import { Task } from 'src/app/models/task';
 import { ComponentTaskDialogComponent } from '../component-task-dialog/component-task-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { TaskService } from 'src/app/services/tasks.service';
-import { filter, switchMap } from 'rxjs/operators';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-component-all-task',
   templateUrl: './component-all-task.component.html',
   styleUrls: ['./component-all-task.component.less']
 })
-export class ComponentAllTaskComponent implements OnInit {
+export class ComponentAllTaskComponent implements OnInit, OnDestroy {
+
+  private readonly destroy$ = new Subject<void>()
 
   tasks : Task[] = [];
 
@@ -23,24 +25,30 @@ export class ComponentAllTaskComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAllTask();
-    this.subjectReloadTaskAll$.subscribe(() => {
-      this.getAllTask()
-    })
+    this.subjectReloadTaskAll$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.getAllTask()
+      })
   }
 
    getAllTask(){
-    this.taskService.getAllTask(null).subscribe({
-      next : (response : Task[]) => {
-        this.tasks = response
+    this.taskService.getAllTask(null)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+          next : (response : Task[]) => {
+          this.tasks = response
       }
     });
   }
 
   deleteTask(event : String){
-      this.taskService.deleteTask(event).subscribe({
-        next : () => {
-          this.tasks = this.tasks.filter( element => element.id !== event)
-        }
+      this.taskService.deleteTask(event)
+      .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next : () => {
+            this.tasks = this.tasks.filter( element => element.id !== event)
+          }
       })
   }
 
@@ -55,5 +63,10 @@ export class ComponentAllTaskComponent implements OnInit {
       ).subscribe((response : Task) => {
           this.tasks.push(response)
       });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next()
+    this.destroy$.complete()
   }
 }
