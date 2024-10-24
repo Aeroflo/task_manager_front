@@ -4,7 +4,7 @@
   <div class="container">
     <form [formGroup]="form">
       <mat-form-field>
-        <mat-label>Nom de la tache</mat-label>
+        <mat-label>Nom de la tâche</mat-label>
         <input matInput
           [maxLength]="50"
           placeholder="titre"
@@ -14,13 +14,13 @@
       </mat-form-field> 
 
       <mat-form-field>
-        <mat-label>Description de la tache</mat-label>
+        <mat-label>Description de la tâche</mat-label>
           <textarea matInput
             cdkTextareaAutosize
             [maxLength]="300"
             cdkAutosizeMinRows="3"
             cdkAutosizeMaxRows="5"
-            placeholder="description de la tache"
+            placeholder="description de la tâche"
             formControlName="description"
             required
           ></textarea>

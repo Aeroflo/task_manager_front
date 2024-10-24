@@ -39,13 +39,13 @@ export class ComponentTaskManagementComponent implements OnInit, OnDestroy {
       })
   }
 
-  loadAllTasksSorted(){
+  loadAllTasksSorted() : void{
     this.getTask(TaskStatus.TODO);
     this.getTask(TaskStatus.IN_PROGRESS)
     this.getTask(TaskStatus.DONE)
   }
 
-  deleteTask(event : string){
+  deleteTask(event : string) : void{
     console.log("Delete task")
     this.taskService.deleteTask(event)
       .pipe(takeUntil(this.destroy$))
@@ -60,7 +60,7 @@ export class ComponentTaskManagementComponent implements OnInit, OnDestroy {
 
 
 
-  private getTask(taskStatus : TaskStatus){
+  private getTask(taskStatus : TaskStatus) : void{
     this.taskService.getAllTask(taskStatus)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -84,7 +84,7 @@ export class ComponentTaskManagementComponent implements OnInit, OnDestroy {
   }
 
 
-  dropTodo(event: CdkDragDrop<Task[]>) {
+  dropTodo(event: CdkDragDrop<Task[]>) : void {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
@@ -92,7 +92,7 @@ export class ComponentTaskManagementComponent implements OnInit, OnDestroy {
     }
   }
 
-  dropProgress(event: CdkDragDrop<Task[]>) {
+  dropProgress(event: CdkDragDrop<Task[]>) : void{
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
@@ -100,7 +100,7 @@ export class ComponentTaskManagementComponent implements OnInit, OnDestroy {
     }
   }
 
-  dropDone(event: CdkDragDrop<Task[]>) {
+  dropDone(event: CdkDragDrop<Task[]>) : void {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
@@ -108,7 +108,7 @@ export class ComponentTaskManagementComponent implements OnInit, OnDestroy {
     }
   }
 
-  moveTaskToStatus(event: CdkDragDrop<Task[]>, newStatus: TaskStatus){
+  moveTaskToStatus(event: CdkDragDrop<Task[]>, newStatus: TaskStatus) : void{
     const currentTask = event.previousContainer.data[event.previousIndex]
       const taskPreviousStatus = currentTask.taskStatus;
       currentTask.taskStatus = newStatus

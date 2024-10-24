@@ -32,7 +32,7 @@ export class ComponentAllTaskComponent implements OnInit, OnDestroy {
       })
   }
 
-   getAllTask(){
+   getAllTask() : void{
     this.taskService.getAllTask(null)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -42,7 +42,7 @@ export class ComponentAllTaskComponent implements OnInit, OnDestroy {
     });
   }
 
-  deleteTask(event : String){
+  deleteTask(event : string){
       this.taskService.deleteTask(event)
       .pipe(takeUntil(this.destroy$))
         .subscribe({
